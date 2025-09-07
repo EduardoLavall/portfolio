@@ -656,7 +656,7 @@ body {
 }
 
 /* Ocultar elementos inicialmente */
-.hero-title, .hero-subtitle, .hero-description, .contact-info, .hero-image, .hero-link {
+.hero-title, .hero-subtitle, .hero-description, .contact-info, .hero-image, .hero-link, .scroll-down-message {
     opacity: 0;
 }
 
@@ -849,5 +849,47 @@ body {
     
     .hero-text .contact-info p {
         font-size: 1rem;
+    }
+}
+
+.scroll-down-message {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    text-align: center;
+    transition: opacity 0.5s ease;
+    animation: bounce 2s infinite;
+}
+
+.scroll-down-message.fade-in {
+    opacity: 1;
+}
+
+.scroll-down-message p {
+    color: #FF0000;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #FF0000;
+    margin: 0 auto;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    40% {
+        transform: translateX(-50%) translateY(-20px);
+    }
+    60% {
+        transform: translateX(-50%) translateY(-10px);
     }
 }

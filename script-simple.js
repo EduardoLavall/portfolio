@@ -1,187 +1,204 @@
-/* JavaScript Simplificado para o Portfólio */
+window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+}
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Portfólio carregado!');
-    
-    // ============================================
-    // CURSOR PERSONALIZADO
-    // ============================================
-    
+    // Elementos da Animação
+    const heroTitle = document.querySelector('.hero-title');
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+    const heroDescription = document.querySelector('.hero-description');
+    const contactInfo = document.querySelector('.contact-info');
+    const heroImage = document.querySelector('.hero-image');
+    const heroLinks = document.querySelectorAll('.hero-link');
+    const scrollDownMessage = document.querySelector('.scroll-down-message');
+
+    // Elementos do Script Original
+    const headerFixed = document.getElementById('header-fixed');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const blocks = document.querySelectorAll('.block');
     const cursorGlow = document.querySelector('.cursor-glow');
+
+    // Função de Animação de Digitação
+    function typeEffect(element, text, duration, callback) {
+        element.textContent = '';
+        element.style.opacity = '1';
+        let i = 0;
+        const typing = setInterval(() => {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+            } else {
+                clearInterval(typing);
+                if (callback) callback();
+            }
+        }, duration / text.length);
+    }
+
+    // Animação dos Links
+    function animateLinks() {
+        let delay = 0;
+        heroLinks.forEach(link => {
+            setTimeout(() => {
+                link.style.opacity = '1';
+                link.classList.add('scale-up');
+            }, delay);
+            delay += 150;
+        });
+        setTimeout(() => {
+            document.body.style.overflow = 'auto';
+            // Ativa o comportamento do header após a animação
+            window.addEventListener('scroll', debouncedHandleScroll);
+            // Mostra a mensagem de scroll
+            scrollDownMessage.style.opacity = '1';
+            scrollDownMessage.style.pointerEvents = 'auto';
+        }, delay);
+    }
+
+    // Sequência da Animação Principal
+    function startAnimation() {
+        document.body.style.overflow = 'hidden';
+        scrollDownMessage.style.opacity = '0';
+        scrollDownMessage.style.pointerEvents = 'none';
+
+        const titleText = heroTitle.textContent;
+        const subtitleText = heroSubtitle.textContent;
+        const descriptionText = heroDescription.textContent;
+        heroTitle.textContent = '';
+        heroSubtitle.textContent = '';
+        heroDescription.textContent = '';
+
+        setTimeout(() => {
+            typeEffect(heroTitle, titleText, 500, () => {
+                setTimeout(() => {
+                    typeEffect(heroSubtitle, subtitleText, 250, () => {
+                        setTimeout(() => {
+                            typeEffect(heroDescription, descriptionText, 1000, () => {
+                                setTimeout(() => {
+                                    contactInfo.style.opacity = '1';
+                                    contactInfo.classList.add('fade-in');
+                                    setTimeout(() => {
+                                        heroImage.style.opacity = '1';
+                                        heroImage.classList.add('scale-up');
+                                        setTimeout(() => animateLinks(), 250);
+                                    }, 250);
+                                }, 500);
+                            });
+                        }, 500);
+                    });
+                }, 500);
+            });
+        }, 500);
+    }
+
+    // Funções do Script Original
+    function handleScroll() {
+        const scrollY = window.scrollY;
+        const heroSection = document.getElementById('sobre');
+        const heroHeight = heroSection.offsetHeight;
+        if (scrollY > heroHeight * 0.3) {
+            headerFixed.classList.add('visible');
+        } else {
+            headerFixed.classList.remove('visible');
+        }
+        updateActiveSection();
+    }
+
+    function updateActiveSection() {
+        const sections = document.querySelectorAll('section[id]');
+        const scrollY = window.scrollY;
+        let currentSection = '';
+        for (let i = sections.length - 1; i >= 0; i--) {
+            const section = sections[i];
+            const sectionTop = section.offsetTop;
+            const sectionId = section.getAttribute('id');
+            if (scrollY >= sectionTop - 200) {
+                currentSection = sectionId;
+                break;
+            }
+        }
+        if (!currentSection) {
+            currentSection = 'sobre';
+        }
+        navLinks.forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(`[data-section="${currentSection}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+
+        // Mostra ou esconde a mensagem de scroll
+        if (currentSection === 'sobre') {
+            scrollDownMessage.style.opacity = '1';
+            scrollDownMessage.style.pointerEvents = 'auto';
+        } else {
+            scrollDownMessage.style.opacity = '0';
+            scrollDownMessage.style.pointerEvents = 'none';
+        }
+    }
+
+    let scrollTimeout;
+    function debouncedHandleScroll() {
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
+        }
+        scrollTimeout = setTimeout(handleScroll, 10);
+    }
+
+    updateActiveSection();
+    handleScroll(); // Chama a função para o estado inicial
+
     let mouseX = 0;
     let mouseY = 0;
-    
-    if (cursorGlow) {
-        // Segue o movimento do mouse
-        document.addEventListener('mousemove', function(e) {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            cursorGlow.style.left = mouseX - 10 + 'px';
-            cursorGlow.style.top = mouseY - 10 + 'px';
-        });
-        
-        // Efeito especial quando o cursor está sobre elementos clicáveis
-        const clickableElements = document.querySelectorAll('a, .block');
-        
-        clickableElements.forEach(element => {
-            element.addEventListener('mouseenter', function() {
-                cursorGlow.style.transform = 'scale(1.5)';
-                cursorGlow.style.background = 'radial-gradient(circle, #FF3333 0%, transparent 70%)';
-            });
-            
-            element.addEventListener('mouseleave', function() {
-                cursorGlow.style.transform = 'scale(1)';
-                cursorGlow.style.background = 'radial-gradient(circle, #FF0000 0%, transparent 70%)';
-            });
-        });
-    }
-    
-    // ============================================
-    // NAVEGAÇÃO SUAVE
-    // ============================================
-    
-    const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
-    
+    document.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursorGlow.style.left = mouseX - 10 + 'px';
+        cursorGlow.style.top = mouseY - 10 + 'px';
+    });
+
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
+            const targetId = this.getAttribute('href').substring(1);
+            const targetSection = document.getElementById(targetId);
             if (targetSection) {
-                const headerHeight = document.querySelector('.header').offsetHeight;
-                const targetPosition = targetSection.offsetTop - headerHeight - 20;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
             }
         });
     });
-    
-    // ============================================
-    // EFEITOS DE HOVER NOS BLOCOS
-    // ============================================
-    
-    const blocks = document.querySelectorAll('.block');
-    
+
     blocks.forEach(block => {
         block.addEventListener('mouseenter', function() {
-            console.log('Hover no bloco!');
-            this.style.transform = 'translateY(-10px) scale(1.02)';
+            this.style.transform = 'translateY(-5px)';
+            this.style.transition = 'transform 0.3s ease';
         });
-        
         block.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
+            this.style.transform = 'translateY(0)';
         });
     });
-    
-    // ============================================
-    // EFEITO DE DIGITAÇÃO NO TÍTULO
-    // ============================================
-    
-    const navBrand = document.querySelector('.nav-brand h1');
-    if (navBrand) {
-        const originalText = navBrand.textContent;
-        let currentIndex = 0;
-        let isDeleting = false;
-        
-        function typeWriter() {
-            if (isDeleting) {
-                navBrand.textContent = originalText.substring(0, currentIndex - 1);
-                currentIndex--;
-            } else {
-                navBrand.textContent = originalText.substring(0, currentIndex + 1);
-                currentIndex++;
+
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
             }
-            
-            let typeSpeed = isDeleting ? 50 : 100;
-            
-            if (!isDeleting && currentIndex === originalText.length) {
-                typeSpeed = 2000; // Pausa no final
-                isDeleting = true;
-            } else if (isDeleting && currentIndex === 0) {
-                isDeleting = false;
-                typeSpeed = 500; // Pausa no início
-            }
-            
-            setTimeout(typeWriter, typeSpeed);
-        }
-        
-        // Inicia o efeito de digitação após 1 segundo
-        setTimeout(typeWriter, 1000);
-    }
-    
-    // ============================================
-    // EFEITO DE PARTÍCULAS NO CLIQUE
-    // ============================================
-    
-    document.addEventListener('click', function(e) {
-        // Cria partículas ao clicar
-        for (let i = 0; i < 3; i++) {
-            setTimeout(() => {
-                createParticle(
-                    e.clientX + (Math.random() - 0.5) * 20,
-                    e.clientY + (Math.random() - 0.5) * 20
-                );
-            }, i * 50);
-        }
+        });
+    }, observerOptions);
+
+    blocks.forEach(block => {
+        block.style.opacity = '0';
+        block.style.transform = 'translateY(30px)';
+        block.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(block);
     });
-    
-    function createParticle(x, y) {
-        const particle = document.createElement('div');
-        particle.style.position = 'fixed';
-        particle.style.left = x + 'px';
-        particle.style.top = y + 'px';
-        particle.style.width = '4px';
-        particle.style.height = '4px';
-        particle.style.background = '#FF0000';
-        particle.style.borderRadius = '50%';
-        particle.style.pointerEvents = 'none';
-        particle.style.zIndex = '1000';
-        particle.style.boxShadow = '0 0 10px #FF0000';
-        
-        document.body.appendChild(particle);
-        
-        // Animação da partícula
-        let opacity = 1;
-        let size = 4;
-        const animation = setInterval(() => {
-            opacity -= 0.02;
-            size += 0.5;
-            particle.style.opacity = opacity;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            
-            if (opacity <= 0) {
-                clearInterval(animation);
-                if (document.body.contains(particle)) {
-                    document.body.removeChild(particle);
-                }
-            }
-        }, 16);
-    }
-    
-    // ============================================
-    // DETECÇÃO DE DISPOSITIVOS MÓVEIS
-    // ============================================
-    
-    function isMobile() {
-        return window.innerWidth <= 768;
-    }
-    
-    if (isMobile()) {
-        // Desabilita cursor personalizado em mobile
-        if (cursorGlow) {
-            cursorGlow.style.display = 'none';
-        }
-        document.body.style.cursor = 'auto';
-    } else {
-        // Habilita cursor personalizado em desktop
-        document.body.style.cursor = 'none';
-    }
-    
-    console.log('✅ Todos os efeitos carregados com sucesso!');
+
+    // Inicia a Animação
+    startAnimation();
 });
