@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfólio - Desenvolvedor</title>
     <link rel="stylesheet" href="styles-simple.css">
+    <script>
+        window.onbeforeunload = function () {
+            window.scrollTo(0, 0);
+        }
+    </script>
 </head>
 <body>
     <div class="parallax-container">
@@ -238,71 +243,124 @@
         </main>
     </div>
 
-    <script>
-        // JavaScript para portfólio Eduardo Dias
+            <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Portfólio Eduardo Dias carregado!');
-            
-            // Cabeçalho fixo
+            // Elementos da Animação
+            const heroTitle = document.querySelector('.hero-title');
+            const heroSubtitle = document.querySelector('.hero-subtitle');
+            const heroDescription = document.querySelector('.hero-description');
+            const contactInfo = document.querySelector('.contact-info');
+            const heroImage = document.querySelector('.hero-image');
+            const heroLinks = document.querySelectorAll('.hero-link');
+
+            // Elementos do Script Original
             const headerFixed = document.getElementById('header-fixed');
             const navLinks = document.querySelectorAll('.nav-link');
-            
-            // Função para mostrar/esconder cabeçalho no scroll
+            const blocks = document.querySelectorAll('.block');
+            const cursorGlow = document.querySelector('.cursor-glow');
+
+            // Função de Animação de Digitação
+            function typeEffect(element, text, duration, callback) {
+                element.textContent = '';
+                element.style.opacity = '1';
+                let i = 0;
+                const typing = setInterval(() => {
+                    if (i < text.length) {
+                        element.textContent += text.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(typing);
+                        if (callback) callback();
+                    }
+                }, duration / text.length);
+            }
+
+            // Animação dos Links
+            function animateLinks() {
+                let delay = 0;
+                heroLinks.forEach(link => {
+                    setTimeout(() => {
+                        link.style.opacity = '1';
+                        link.classList.add('scale-up');
+                    }, delay);
+                    delay += 150;
+                });
+                setTimeout(() => {
+                    document.body.style.overflow = 'auto';
+                    // Ativa o comportamento do header após a animação
+                    window.addEventListener('scroll', debouncedHandleScroll);
+                }, delay);
+            }
+
+            // Sequência da Animação Principal
+            function startAnimation() {
+                document.body.style.overflow = 'hidden';
+                const titleText = heroTitle.textContent;
+                const subtitleText = heroSubtitle.textContent;
+                const descriptionText = heroDescription.textContent;
+                heroTitle.textContent = '';
+                heroSubtitle.textContent = '';
+                heroDescription.textContent = '';
+
+                setTimeout(() => {
+                    typeEffect(heroTitle, titleText, 500, () => {
+                        setTimeout(() => {
+                            typeEffect(heroSubtitle, subtitleText, 250, () => {
+                                setTimeout(() => {
+                                    typeEffect(heroDescription, descriptionText, 1000, () => {
+                                        setTimeout(() => {
+                                            contactInfo.style.opacity = '1';
+                                            contactInfo.classList.add('fade-in');
+                                            setTimeout(() => {
+                                                heroImage.style.opacity = '1';
+                                                heroImage.classList.add('scale-up');
+                                                setTimeout(() => animateLinks(), 250);
+                                            }, 250);
+                                        }, 500);
+                                    });
+                                }, 500);
+                            });
+                        }, 500);
+                    });
+                }, 500);
+            }
+
+            // Funções do Script Original
             function handleScroll() {
                 const scrollY = window.scrollY;
                 const heroSection = document.getElementById('sobre');
                 const heroHeight = heroSection.offsetHeight;
-                
                 if (scrollY > heroHeight * 0.3) {
                     headerFixed.classList.add('visible');
                 } else {
                     headerFixed.classList.remove('visible');
                 }
-                
-                // Atualizar seção ativa
                 updateActiveSection();
             }
-            
-            // Função para atualizar seção ativa
+
             function updateActiveSection() {
                 const sections = document.querySelectorAll('section[id]');
                 const scrollY = window.scrollY;
-                
                 let currentSection = '';
-                
-                // Percorre as seções de baixo para cima para encontrar a primeira que está visível
                 for (let i = sections.length - 1; i >= 0; i--) {
                     const section = sections[i];
                     const sectionTop = section.offsetTop;
                     const sectionId = section.getAttribute('id');
-                    
-                    // Debug: log das posições
-                    console.log(`Seção ${sectionId}: top=${sectionTop}, scroll=${scrollY}`);
-                    
-                    // Se o scroll passou do início da seção (com offset de 200px)
                     if (scrollY >= sectionTop - 200) {
                         currentSection = sectionId;
-                        console.log(`Seção ativa: ${currentSection}`);
                         break;
                     }
                 }
-                
-                // Se não encontrou nenhuma seção, usa a primeira (sobre)
                 if (!currentSection) {
                     currentSection = 'sobre';
                 }
-                
-                // Remove active de todos os links
                 navLinks.forEach(link => link.classList.remove('active'));
-                
-                // Adiciona active ao link correspondente
                 const activeLink = document.querySelector(`[data-section="${currentSection}"]`);
                 if (activeLink) {
                     activeLink.classList.add('active');
                 }
             }
-            
-            // Debounce para melhorar performance
+
             let scrollTimeout;
             function debouncedHandleScroll() {
                 if (scrollTimeout) {
@@ -310,32 +368,23 @@
                 }
                 scrollTimeout = setTimeout(handleScroll, 10);
             }
-            
-            // Event listener para scroll
-            window.addEventListener('scroll', debouncedHandleScroll);
-            
-            // Definir seção ativa inicial
+
             updateActiveSection();
-            
-            // Cursor personalizado com efeito glow
-            const cursorGlow = document.querySelector('.cursor-glow');
+
             let mouseX = 0;
             let mouseY = 0;
-            
             document.addEventListener('mousemove', function(e) {
                 mouseX = e.clientX;
                 mouseY = e.clientY;
                 cursorGlow.style.left = mouseX - 10 + 'px';
                 cursorGlow.style.top = mouseY - 10 + 'px';
             });
-            
-            // Navegação suave entre seções
+
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const targetId = this.getAttribute('href').substring(1);
                     const targetSection = document.getElementById(targetId);
-                    
                     if (targetSection) {
                         targetSection.scrollIntoView({
                             behavior: 'smooth',
@@ -344,26 +393,21 @@
                     }
                 });
             });
-            
-            // Efeito hover nos blocos
-            const blocks = document.querySelectorAll('.block');
+
             blocks.forEach(block => {
                 block.addEventListener('mouseenter', function() {
                     this.style.transform = 'translateY(-5px)';
                     this.style.transition = 'transform 0.3s ease';
                 });
-                
                 block.addEventListener('mouseleave', function() {
                     this.style.transform = 'translateY(0)';
                 });
             });
-            
-            // Animação de entrada dos blocos
+
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -50px 0px'
             };
-            
             const observer = new IntersectionObserver(function(entries) {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -372,13 +416,16 @@
                     }
                 });
             }, observerOptions);
-            
+
             blocks.forEach(block => {
                 block.style.opacity = '0';
                 block.style.transform = 'translateY(30px)';
                 block.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
                 observer.observe(block);
             });
+
+            // Inicia a Animação
+            startAnimation();
         });
     </script>
 </body>
