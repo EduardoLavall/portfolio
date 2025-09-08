@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => {
                     typeEffect(heroSubtitle, subtitleText, 250, () => {
                         setTimeout(() => {
-                            typeEffect(heroDescription, descriptionText, 1000, () => {
+                            typeEffect(heroDescription, descriptionText, 1, () => {
                                 setTimeout(() => {
                                     contactInfo.style.opacity = '1';
                                     contactInfo.classList.add('fade-in');
