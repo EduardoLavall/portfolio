@@ -146,14 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateActiveSection();
     handleScroll(); // Chama a função para o estado inicial
 
-    let mouseX = 0;
-    let mouseY = 0;
-    document.addEventListener('mousemove', function(e) {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        cursorGlow.style.left = mouseX - 10 + 'px';
-        cursorGlow.style.top = mouseY - 10 + 'px';
-    });
+    
 
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {

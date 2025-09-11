@@ -11,6 +11,7 @@
 body {
     font-family: 'Courier New', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     background-color: #000000;
+    background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1) 1px, transparent 1px, transparent 10px);
     color: #FFFFFF;
     line-height: 1.6;
 }
@@ -18,7 +19,8 @@ body {
 /* Container principal */
 .parallax-container {
     min-height: 100vh;
-    background: #000000;
+    background-color: #000000;
+    background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 10px);
 }
 
 /* Header Fixo */
@@ -181,17 +183,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
 }
 
-/* Cursor personalizado */
-.cursor-glow {
-    position: fixed;
-    width: 20px;
-    height: 20px;
-    background: radial-gradient(circle, #00BFFF 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    box-shadow: 0 0 20px #00BFFF;
-}
+
 
 /* Estilos para Hero Section */
 .hero-section {
